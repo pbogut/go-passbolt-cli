@@ -21,6 +21,7 @@ var celEnvOptions = []cel.EnvOption{
 	cel.Variable("URI", cel.StringType),
 	cel.Variable("Password", cel.StringType),
 	cel.Variable("Description", cel.StringType),
+	cel.Variable("ResourceTypeID", cel.StringType),
 	cel.Variable("CreatedTimestamp", cel.TimestampType),
 	cel.Variable("ModifiedTimestamp", cel.TimestampType),
 }
@@ -60,6 +61,7 @@ func filterResources(resources *[]api.Resource, celCmd string, ctx context.Conte
 				}
 				return types.String(descr)
 			},
+			"ResourceTypeID":    resource.ResourceTypeID,
 			"CreatedTimestamp":  resource.Created.Time,
 			"ModifiedTimestamp": resource.Modified.Time,
 		})
