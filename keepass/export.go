@@ -130,7 +130,7 @@ func KeepassExport(cmd *cobra.Command, args []string) error {
 }
 
 func getKeepassEntry(client *api.Client, resource api.Resource, secret api.Secret, rType api.ResourceType) (*gokeepasslib.Entry, error) {
-	_, _, _, _, pass, desc, err := helper.GetResourceFromData(client, resource, resource.Secrets[0], resource.ResourceType)
+	_, _, _, _, pass, desc, _, err := helper.GetResourceFromData(client, resource, resource.Secrets[0], resource.ResourceType)
 	if err != nil {
 		return nil, fmt.Errorf("Get Resource %v: %w", resource.ID, err)
 	}

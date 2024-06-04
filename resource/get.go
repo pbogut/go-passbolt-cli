@@ -44,7 +44,7 @@ func ResourceGet(cmd *cobra.Command, args []string) error {
 	defer client.Logout(context.TODO())
 	cmd.SilenceUsage = true
 
-	folderParentID, name, username, uri, password, description, err := helper.GetResource(
+	folderParentID, name, username, uri, password, description, totp, err := helper.GetResource(
 		ctx,
 		client,
 		id,
@@ -61,6 +61,7 @@ func ResourceGet(cmd *cobra.Command, args []string) error {
 			URI:            &uri,
 			Password:       &password,
 			Description:    &description,
+			TOTP:           &totp,
 		}, "", "  ")
 		if err != nil {
 			return err
@@ -73,6 +74,9 @@ func ResourceGet(cmd *cobra.Command, args []string) error {
 		fmt.Printf("URI: %v\n", shellescape.StripUnsafe(uri))
 		fmt.Printf("Password: %v\n", shellescape.StripUnsafe(password))
 		fmt.Printf("Description: %v\n", shellescape.StripUnsafe(description))
+		if totp != "" {
+			fmt.Printf("TOTP: %v\n", shellescape.StripUnsafe(totp))
+		}
 	}
 	return nil
 }

@@ -45,7 +45,7 @@ func filterResources(resources *[]api.Resource, celCmd string, ctx context.Conte
 			"Username":       resource.Username,
 			"URI":            resource.URI,
 			"Password": func() ref.Val {
-				_, _, _, _, pass, _, err := helper.GetResource(ctx, client, resource.ID)
+				_, _, _, _, pass, _, _, err := helper.GetResource(ctx, client, resource.ID)
 				if err != nil {
 					fmt.Printf("Get Resource %v", err)
 					return types.String("")
@@ -53,7 +53,7 @@ func filterResources(resources *[]api.Resource, celCmd string, ctx context.Conte
 				return types.String(pass)
 			},
 			"Description": func() ref.Val {
-				_, _, _, _, _, descr, err := helper.GetResource(ctx, client, resource.ID)
+				_, _, _, _, _, descr, _, err := helper.GetResource(ctx, client, resource.ID)
 				if err != nil {
 					fmt.Printf("Get Resource %v", err)
 					return types.String("")

@@ -30,7 +30,7 @@ func init() {
 	ResourceListCmd.Flags().Bool("own", false, "Resources that are owned by me")
 	ResourceListCmd.Flags().StringP("group", "g", "", "Resources that are shared with group")
 	ResourceListCmd.Flags().StringArrayP("folder", "f", []string{}, "Resources that are in folder")
-	ResourceListCmd.Flags().StringArrayP("column", "c", []string{"ID", "FolderParentID", "Name", "Username", "URI"}, "Columns to return, possible Columns:\nID, FolderParentID, Name, Username, URI, Password, Description, CreatedTimestamp, ModifiedTimestamp")
+	ResourceListCmd.Flags().StringArrayP("column", "c", []string{"ID", "FolderParentID", "Name", "Username", "URI"}, "Columns to return, possible Columns:\nID, FolderParentID, Name, Username, URI, TOTP, Password, Description, CreatedTimestamp, ModifiedTimestamp")
 }
 
 func ResourceList(cmd *cobra.Command, args []string) error {
@@ -93,7 +93,7 @@ func ResourceList(cmd *cobra.Command, args []string) error {
 	if jsonOutput {
 		outputResources := []ResourceJsonOutput{}
 		for i := range resources {
-			_, _, _, _, pass, desc, err := helper.GetResource(ctx, client, resources[i].ID)
+			_, _, _, _, pass, desc, totp, err := helper.GetResource(ctx, client, resources[i].ID)
 			if err != nil {
 				return fmt.Errorf("Get Resource %w", err)
 			}
@@ -105,6 +105,7 @@ func ResourceList(cmd *cobra.Command, args []string) error {
 				URI:               &resources[i].URI,
 				Password:          &pass,
 				Description:       &desc,
+				TOTP:              &totp,
 				CreatedTimestamp:  &resources[i].Created.Time,
 				ModifiedTimestamp: &resources[i].Modified.Time,
 			})
@@ -132,17 +133,23 @@ func ResourceList(cmd *cobra.Command, args []string) error {
 				case "uri":
 					entry[i] = shellescape.StripUnsafe(resource.URI)
 				case "password":
-					_, _, _, _, pass, _, err := helper.GetResource(ctx, client, resource.ID)
+					_, _, _, _, pass, _, _, err := helper.GetResource(ctx, client, resource.ID)
 					if err != nil {
 						return fmt.Errorf("Get Resource %w", err)
 					}
 					entry[i] = shellescape.StripUnsafe(pass)
 				case "description":
-					_, _, _, _, _, desc, err := helper.GetResource(ctx, client, resource.ID)
+					_, _, _, _, _, desc, _, err := helper.GetResource(ctx, client, resource.ID)
 					if err != nil {
 						return fmt.Errorf("Get Resource %w", err)
 					}
 					entry[i] = shellescape.StripUnsafe(desc)
+				case "totp":
+					_, _, _, _, _, _, totp, err := helper.GetResource(ctx, client, resource.ID)
+					if err != nil {
+						return fmt.Errorf("Get Resource %w", err)
+					}
+					entry[i] = shellescape.StripUnsafe(totp)
 				case "createdtimestamp":
 					entry[i] = resource.Created.Format(time.RFC3339)
 				case "modifiedtimestamp":

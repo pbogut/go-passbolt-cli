@@ -10,6 +10,7 @@ type ResourceJsonOutput struct {
 	URI               *string    `json:"uri,omitempty"`
 	Password          *string    `json:"password,omitempty"`
 	Description       *string    `json:"description,omitempty"`
+	TOTP              *string    `json:"totp,omitempty"`
 	CreatedTimestamp  *time.Time `json:"created_timestamp,omitempty"`
 	ModifiedTimestamp *time.Time `json:"modified_timestamp,omitempty"`
 }
